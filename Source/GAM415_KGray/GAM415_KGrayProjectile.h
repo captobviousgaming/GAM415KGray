@@ -8,14 +8,15 @@
 
 class USphereComponent;
 class UProjectileMovementComponent;
+class UMaterialInterface; // Forward declaration required for materials
 
-UCLASS(config=Game)
+UCLASS(config = Game)
 class AGAM415_KGrayProjectile : public AActor
 {
 	GENERATED_BODY()
 
 	/** Sphere collision component */
-	UPROPERTY(VisibleDefaultsOnly, Category=Projectile)
+	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
 	USphereComponent* CollisionComp;
 
 	/** Projectile movement component */
@@ -25,6 +26,20 @@ class AGAM415_KGrayProjectile : public AActor
 public:
 	AGAM415_KGrayProjectile();
 
+	// [Week 2] Exposing the base decal material to the editor so we can assign M_DecalBase.
+	// We keep the actual instantiation and parameter manipulation strictly in C++.
+	UPROPERTY(EditAnywhere, Category = "Materials")
+	UMaterialInterface* DecalMaterialBase;
+
+	// [Week 2] Storing the randomized color generated at spawn so we can pass the exact 
+	// same FLinearColor to the decal upon impact.
+	FLinearColor RandomProjectileColor;
+
+protected:
+	// [Week 2] Overriding BeginPlay to set the projectile color as soon as it spawns.
+	virtual void BeginPlay() override;
+
+public:
 	/** called when projectile hits something */
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
@@ -34,4 +49,3 @@ public:
 	/** Returns ProjectileMovement subobject **/
 	UProjectileMovementComponent* GetProjectileMovement() const { return ProjectileMovement; }
 };
-
