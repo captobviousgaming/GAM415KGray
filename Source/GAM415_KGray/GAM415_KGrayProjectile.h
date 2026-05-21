@@ -8,7 +8,8 @@
 
 class USphereComponent;
 class UProjectileMovementComponent;
-class UMaterialInterface; // Forward declaration required for materials
+class UMaterialInterface;
+class UNiagaraSystem; // [Week 3] Forward declaration for the Niagara System
 
 UCLASS(config = Game)
 class AGAM415_KGrayProjectile : public AActor
@@ -31,8 +32,12 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Materials")
 	UMaterialInterface* DecalMaterialBase;
 
+	// [Week 3] Exposing the Niagara Particle System to the editor so we can assign NS_Splat.
+	UPROPERTY(EditAnywhere, Category = "Particles")
+	UNiagaraSystem* SplatParticleSystem;
+
 	// [Week 2] Storing the randomized color generated at spawn so we can pass the exact 
-	// same FLinearColor to the decal upon impact.
+	// same FLinearColor to the decal and particle system upon impact.
 	FLinearColor RandomProjectileColor;
 
 protected:
