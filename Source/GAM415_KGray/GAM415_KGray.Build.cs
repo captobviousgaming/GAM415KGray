@@ -8,7 +8,7 @@ public class GAM415_KGray : ModuleRules
     {
         PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-        // [Week 3] Added the "Niagara" module to public dependencies so our C++ code can access and utilize the Niagara function libraries.
-        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "Niagara" });
+        // [Week 3] Added Niagara. [Week 4] Added ProceduralMeshComponent for dynamic terrain generation.
+        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "Niagara", "ProceduralMeshComponent" });
     }
 }

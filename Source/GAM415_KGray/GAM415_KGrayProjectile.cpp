@@ -11,6 +11,8 @@
 // [Week 3] Added includes for Niagara spawning and component manipulation.
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
+// [Week 4] Added include to allow the projectile to interact with our custom procedural terrain.
+#include "ProceduralTerrain.h"
 
 AGAM415_KGrayProjectile::AGAM415_KGrayProjectile()
 {
@@ -96,8 +98,26 @@ void AGAM415_KGrayProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherA
 		if (NiagaraComp)
 		{
 			// [Week 3] Set the user parameter "RandColor" to match the projectile's random color.
-			// This utilizes the same FLinearColor generated in BeginPlay.
 			NiagaraComp->SetVariableLinearColor(FName("RandColor"), RandomProjectileColor);
+		}
+	}
+
+	// [Week 4] Perform a Raytrace (LineTrace) straight down from the player's projectile impact.
+	FHitResult TraceHit;
+	FVector StartTrace = Hit.ImpactPoint + FVector(0.f, 0.f, 50.f); // Start slightly above the impact
+	FVector EndTrace = StartTrace + FVector(0.f, 0.f, -200.f); // Trace downwards
+
+	FCollisionQueryParams QueryParams;
+	QueryParams.AddIgnoredActor(this); // Ignore the projectile itself
+
+	// If the raytrace hits our new Procedural Terrain, alter it!
+	if (GetWorld()->LineTraceSingleByChannel(TraceHit, StartTrace, EndTrace, ECC_Visibility, QueryParams))
+	{
+		AProceduralTerrain* HitTerrain = Cast<AProceduralTerrain>(TraceHit.GetActor());
+		if (HitTerrain)
+		{
+			// [Week 4] Carve a crater into the terrain at the exact raytrace impact point.
+			HitTerrain->AlterTerrain(TraceHit.ImpactPoint, 250.f, 150.f);
 		}
 	}
 
